@@ -1,0 +1,2 @@
+"use client";
+export default function ErrorPage({reset}:{reset:()=>void}){return <div className="message error" role="alert"><p>Service lifecycle is unavailable. Check Firebase indexes and try again.</p><button className="button secondary" onClick={reset}>Try again</button></div>;}

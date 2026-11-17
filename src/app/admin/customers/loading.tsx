@@ -1,0 +1,1 @@
+export default function LoadingCustomers() { return <section className="customer-empty" role="status"><span className="pill">CUSTOMERS</span><h2>Loading customer information…</h2><p className="muted">Just a moment.</p></section>; }

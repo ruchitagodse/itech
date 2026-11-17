@@ -1,0 +1,2 @@
+"use client";
+export default function CustomerError({ reset }: { reset: () => void }) { return <section className="customer-empty" role="alert"><h2>Couldn’t load customer information.</h2><p className="muted">Try again. If this continues, ask your administrator to check Firebase connectivity and the customer search index.</p><button className="button primary" onClick={reset}>Try again</button></section>; }
