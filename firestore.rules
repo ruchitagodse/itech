@@ -1,0 +1,167 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function hasRole(role) {
+      return request.auth != null && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    function isAdmin() { return hasRole('admin'); }
+    function isOwner(data) { return hasRole('customer') && data.ownerUid == request.auth.uid; }
+    function validCustomer(data) {
+      return data.keys().hasAll(['fullName','email','phone','alternatePhone','address','city','state','pincode','active','ownerUid','searchTokens','createdAt','createdBy','updatedAt','updatedBy'])
+        && data.keys().hasOnly(['fullName','email','phone','alternatePhone','address','city','state','pincode','active','ownerUid','searchTokens','createdAt','createdBy','updatedAt','updatedBy'])
+        && data.fullName is string && data.fullName.matches('.*[^\\s].*') && data.fullName.size() > 0 && data.fullName.size() <= 100
+        && data.email is string && data.email.size() <= 254 && data.email == data.email.lower()
+        && data.email.matches('[^\\s@/]+@[^\\s@/]+[.][^\\s@/]+')
+        && data.phone is string && data.phone.matches('[1-9][0-9]{9}')
+        && data.alternatePhone is string && (data.alternatePhone == '' || data.alternatePhone.matches('[1-9][0-9]{9}'))
+        && data.address is string && data.address.matches('.*[^\\s].*') && data.address.size() > 0 && data.address.size() <= 500
+        && data.city is string && data.city.matches('.*[^\\s].*') && data.city.size() > 0 && data.city.size() <= 100
+        && data.state is string && data.state.matches('.*[^\\s].*') && data.state.size() > 0 && data.state.size() <= 100
+        && data.pincode is string && data.pincode.matches('[1-9][0-9]{5}')
+        && data.active is bool && data.searchTokens is list && data.searchTokens.size() <= 600
+        && (data.ownerUid == null || (data.ownerUid is string && data.ownerUid.size() > 0
+          && get(/databases/$(database)/documents/users/$(data.ownerUid)).data.role == 'customer'))
+        && data.createdAt is timestamp && data.updatedAt == request.time
+        && data.createdBy is string && data.updatedBy == request.auth.uid;
+    }
+    function holdsKeys(data, id) {
+      return getAfter(/databases/$(database)/documents/customerKeys/$('email_' + data.email)).data.customerId == id
+        && getAfter(/databases/$(database)/documents/customerKeys/$('phone_' + data.phone)).data.customerId == id
+        && (data.ownerUid == null || getAfter(/databases/$(database)/documents/customerKeys/$('owner_' + data.ownerUid)).data.customerId == id);
+    }
+    function matchesKey(key, data) {
+      return key == 'email_' + data.email || key == 'phone_' + data.phone
+        || (data.ownerUid != null && key == 'owner_' + data.ownerUid);
+    }
+    match /customers/{id} {
+      allow read: if isAdmin() || isOwner(resource.data);
+      allow create: if isAdmin() && validCustomer(request.resource.data)
+        && request.resource.data.createdBy == request.auth.uid && request.resource.data.createdAt == request.time
+        && holdsKeys(request.resource.data, id);
+      allow update: if isAdmin() && validCustomer(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.createdBy == resource.data.createdBy
+        && (resource.data.ownerUid == null || request.resource.data.ownerUid == resource.data.ownerUid)
+        && holdsKeys(request.resource.data, id);
+      allow delete: if false;
+    }
+    match /customerKeys/{key} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && request.resource.data.keys().hasOnly(['customerId'])
+        && request.resource.data.customerId is string
+        && matchesKey(key, getAfter(/databases/$(database)/documents/customers/$(request.resource.data.customerId)).data);
+      allow update: if isAdmin() && request.resource.data.keys().hasOnly(['customerId'])
+        && request.resource.data.customerId == resource.data.customerId
+        && matchesKey(key, getAfter(/databases/$(database)/documents/customers/$(request.resource.data.customerId)).data);
+      allow delete: if isAdmin()
+        && !matchesKey(key, getAfter(/databases/$(database)/documents/customers/$(resource.data.customerId)).data);
+    }
+
+    function applianceKey(data) { return 'serial_' + data.brand.lower() + '|' + data.serialNumber; }
+    function validApplianceDate(value) {
+      return value is string && (value == '' || value.matches('(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])'));
+    }
+    function validAppliance(data) {
+      return data.keys().hasAll(['type','brand','model','serialNumber','purchaseDate','installationDate','notes','active','createdAt','createdBy','updatedAt','updatedBy'])
+        && data.keys().hasOnly(['type','brand','model','serialNumber','purchaseDate','installationDate','notes','active','createdAt','createdBy','updatedAt','updatedBy'])
+        && data.type in ['water_purifier','ac']
+        && data.brand is string && data.brand.size() > 0 && data.brand.size() <= 80
+        && data.brand.matches('.*[^\\s].*') && data.brand.matches('[^/|\\x00-\\x1f]+')
+        && data.model is string && data.model.size() > 0 && data.model.size() <= 100 && data.model.matches('.*[^\\s].*')
+        && data.serialNumber is string && (data.serialNumber == '' || data.serialNumber.matches('[A-Z0-9][A-Z0-9._-]{0,79}'))
+        && validApplianceDate(data.purchaseDate) && validApplianceDate(data.installationDate)
+        && (data.purchaseDate == '' || data.installationDate == '' || data.installationDate >= data.purchaseDate)
+        && data.notes is string && data.notes.size() <= 1000 && data.active is bool
+        && data.createdAt is timestamp && data.createdBy is string
+        && data.updatedAt == request.time && data.updatedBy == request.auth.uid;
+    }
+    function applianceHasKey(data, customerId, id) {
+      return data.serialNumber == '' || (
+        getAfter(/databases/$(database)/documents/applianceKeys/$(applianceKey(data))).data.customerId == customerId
+        && getAfter(/databases/$(database)/documents/applianceKeys/$(applianceKey(data))).data.applianceId == id);
+    }
+    function validApplianceReservation(key, data) {
+      return data.keys().hasAll(['customerId','applianceId']) && data.keys().hasOnly(['customerId','applianceId'])
+        && data.customerId is string && data.applianceId is string
+        && getAfter(/databases/$(database)/documents/customers/$(data.customerId)/appliances/$(data.applianceId)).data.serialNumber != ''
+        && key == applianceKey(getAfter(/databases/$(database)/documents/customers/$(data.customerId)/appliances/$(data.applianceId)).data);
+    }
+    match /customers/{customerId}/appliances/{id} {
+      allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(customerId)).data);
+      allow create: if isAdmin() && exists(/databases/$(database)/documents/customers/$(customerId))
+        && validAppliance(request.resource.data)
+        && request.resource.data.createdAt == request.time && request.resource.data.createdBy == request.auth.uid
+        && applianceHasKey(request.resource.data, customerId, id);
+      allow update: if isAdmin() && exists(/databases/$(database)/documents/customers/$(customerId))
+        && validAppliance(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt && request.resource.data.createdBy == resource.data.createdBy
+        && applianceHasKey(request.resource.data, customerId, id);
+      allow delete: if false;
+    }
+    match /customers/{customerId}/appliances/{applianceId}/servicePlans/{planId} {
+      allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(customerId)).data);
+      allow write: if false;
+      match /maintenanceVisits/{visitId} {
+        allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(customerId)).data);
+        allow write: if false;
+      }
+      match /visits/{requestId} {
+        allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(customerId)).data);
+        allow write: if false;
+      }
+    }
+    match /applianceKeys/{key} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && validApplianceReservation(key, request.resource.data);
+      allow update: if isAdmin() && validApplianceReservation(key, request.resource.data)
+        && request.resource.data.customerId == resource.data.customerId
+        && request.resource.data.applianceId == resource.data.applianceId;
+      allow delete: if isAdmin()
+        && (getAfter(/databases/$(database)/documents/customers/$(resource.data.customerId)/appliances/$(resource.data.applianceId)).data.serialNumber == ''
+          || key != applianceKey(getAfter(/databases/$(database)/documents/customers/$(resource.data.customerId)/appliances/$(resource.data.applianceId)).data));
+    }
+
+    // Requests are created/updated only by authenticated server operations.
+    // Clients may read authorized requests, but cannot bypass duplicate or status checks.
+    match /serviceRequests/{id} {
+      allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(resource.data.customerId)).data)
+        || (hasRole('technician') && resource.data.get('assignedTechnicianUid', null) == request.auth.uid);
+      allow write: if false;
+    }
+    match /servicePackages/{id} {
+      allow read: if isAdmin() || (hasRole('customer') && resource.data.active == true);
+      allow write: if false;
+    }
+    match /serviceWork/{id} {
+      allow read: if isAdmin() || (hasRole('technician')
+        && get(/databases/$(database)/documents/serviceRequests/$(id)).data.get('assignedTechnicianUid', null) == request.auth.uid);
+      allow write: if false;
+    }
+    match /serviceRequestKeys/{key} { allow read, write: if false; }
+
+    // Lifecycle data is mutated only through trusted transactional server operations.
+    match /maintenanceSchedule/{id} {
+      allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(resource.data.customerId)).data);
+      allow write: if false;
+    }
+    match /renewals/{id} {
+      allow read: if isAdmin() || isOwner(get(/databases/$(database)/documents/customers/$(resource.data.customerId)).data);
+      allow write: if false;
+    }
+    match /serviceFollowups/{id} { allow read: if isAdmin(); allow write: if false; }
+    match /notifications/{id} {
+      allow read: if isAdmin() || (hasRole('customer') && resource.data.recipientUid == request.auth.uid);
+      allow write: if false;
+    }
+    match /notificationConsents/{uid} {
+      allow read: if request.auth.uid == uid && (isAdmin() || hasRole('customer'));
+      allow write: if false;
+    }
+    // settings, outbox mappings, delivery events, locks and job cursors stay default-deny.
+
+    // Phase 1 user roles and bootstrap documents remain inaccessible to clients.
+    match /{document=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,10 @@
+export type Policy = { validityMonths:number; maintenanceIntervalMonths:number };
+export function addMonths(value:string,months:number):string;
+export function plusDays(value:string,days:number):string;
+export function validPolicy(value:unknown):value is Policy;
+export function period(start:string,policy:Policy):{startsOn:string;expiresOn:string;totalServices:number;usedServices:number;schemaVersion:number;policy:Policy;dueDates:string[]};
+export function scheduleId(planId:string,visit:number):string;
+export function scheduleRows(data:import("firebase-admin/firestore").DocumentData):import("firebase-admin/firestore").DocumentData[];
+export function serviceDueStatus(row:{status:string;dueOn:string;expiresOn:string},today?:string):string;
+export function isId(value:unknown):value is string;
+export { indiaDate } from "./service-plan-dates.mjs";
