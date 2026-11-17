@@ -1,0 +1,9 @@
+import Link from "next/link";
+import { applianceTypes, type ApplianceRecord } from "@/lib/appliances/data";
+export function ApplianceList({ items, basePath, canManage = false }: { items: ApplianceRecord[]; basePath: string; canManage?: boolean }) {
+  if (!items.length) return <section className="customer-empty"><span className="card-icon" aria-hidden="true">◇</span><h2>No appliances added yet</h2><p className="muted">{canManage ? "Add this customer’s water purifier or air conditioner to keep its details together." : "Your appliances will appear here when your administrator adds them."}</p>{canManage && <Link className="button secondary" href={basePath + "/new"}>Add appliance</Link>}</section>;
+  return <section className="customer-list appliance-list" aria-label="Appliance list"><div className="customer-list-header"><span>Appliance</span><span>Brand & model</span><span>Serial number</span><span>Status</span></div>{items.map(item => <Link className="customer-list-row" href={basePath + "/" + item.id} key={item.id}><div><strong>{applianceTypes[item.type]}</strong><small>View details →</small></div><div><span>{item.brand}</span><small>{item.model}</small></div><div><span>{item.serialNumber || "Not provided"}</span></div><div><span className={"customer-status " + (item.active ? "is-active" : "is-inactive")}>{item.active ? "Active" : "Inactive"}</span></div></Link>)}</section>;
+}
+export function AppliancePagination({ nextCursor, cursor, basePath }: { nextCursor: string | null; cursor: string; basePath: string }) {
+  return <div className="customer-pagination"><span className="muted">Up to 25 appliances per page</span><div>{cursor && <Link className="button secondary" href={basePath}>Back to first page</Link>}{nextCursor && <Link className="button secondary" href={basePath + "?cursor=" + encodeURIComponent(nextCursor)}>Next page →</Link>}</div></div>;
+}
