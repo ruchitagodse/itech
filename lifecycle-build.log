@@ -1,0 +1,82 @@
+
+> itech-v2@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 77ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.5s
+  Running TypeScript ...
+  Finished TypeScript in 7.7s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/36) ...
+  Generating static pages using 7 workers (9/36) 
+  Generating static pages using 7 workers (18/36) 
+  Generating static pages using 7 workers (27/36) 
+✓ Generating static pages using 7 workers (36/36) in 1582ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /admin
+├ ƒ /admin/accounts/new
+├ ƒ /admin/customers
+├ ƒ /admin/customers/[id]
+├ ƒ /admin/customers/[id]/appliances
+├ ƒ /admin/customers/[id]/appliances/[applianceId]
+├ ƒ /admin/customers/[id]/appliances/[applianceId]/edit
+├ ƒ /admin/customers/[id]/appliances/[applianceId]/service-plans/new
+├ ƒ /admin/customers/[id]/appliances/new
+├ ƒ /admin/customers/[id]/edit
+├ ƒ /admin/customers/new
+├ ƒ /admin/lifecycle
+├ ƒ /admin/service-packages
+├ ƒ /admin/service-packages/[id]/edit
+├ ƒ /admin/service-packages/new
+├ ƒ /admin/service-requests
+├ ƒ /admin/service-requests/[id]
+├ ƒ /admin/service-requests/new
+├ ƒ /api/admin/accounts
+├ ƒ /api/admin/technicians
+├ ƒ /api/customer/appliances
+├ ƒ /api/customer/profile
+├ ƒ /api/customers
+├ ƒ /api/customers/[id]
+├ ƒ /api/customers/[id]/appliances
+├ ƒ /api/customers/[id]/appliances/[applianceId]
+├ ƒ /api/customers/[id]/appliances/[applianceId]/service-plans
+├ ƒ /api/jobs/service-lifecycle
+├ ƒ /api/lifecycle
+├ ƒ /api/lifecycle/report
+├ ƒ /api/service-packages
+├ ƒ /api/service-packages/[id]
+├ ƒ /api/service-requests
+├ ƒ /api/service-requests/[id]
+├ ƒ /api/service-requests/[id]/assignment
+├ ƒ /api/session
+├ ƒ /api/technician/assignments
+├ ƒ /api/technician/assignments/[id]
+├ ƒ /api/technician/assignments/[id]/work
+├ ƒ /api/whatsapp/webhook
+├ ƒ /customer
+├ ƒ /customer/appliances
+├ ƒ /customer/appliances/[applianceId]
+├ ƒ /customer/lifecycle
+├ ƒ /customer/profile
+├ ƒ /customer/service-packages
+├ ƒ /customer/service-plans
+├ ƒ /customer/service-requests
+├ ƒ /customer/service-requests/[id]
+├ ƒ /customer/service-requests/new
+├ ƒ /login
+├ ƒ /technician
+├ ƒ /technician/assignments
+└ ƒ /technician/assignments/[id]
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
