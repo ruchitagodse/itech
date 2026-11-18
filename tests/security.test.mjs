@@ -202,3 +202,10 @@ test("new job and webhook endpoints deny unauthenticated invocation",async()=>{
   assert.equal((await fetch(origin+"/api/jobs/service-lifecycle",{method:"POST"})).status,401);
   assert.equal((await fetch(origin+"/api/whatsapp/webhook",{method:"POST",body:"{}"})).status,403);
 });
+
+test("homepage redirects to login without a session", async () => {
+  const response = await fetch(origin + "/", { redirect: "manual" });
+  await assertProtectedRedirect(response);
+  assert.equal((await fetch(origin + "/login")).status, 200);
+});
+
