@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="standalone" id="main" role="status"><div className="pill">iTech V2</div><h1>Loading your workspace…</h1><p className="muted">Just a moment.</p></main>; }
