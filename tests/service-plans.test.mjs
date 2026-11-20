@@ -108,11 +108,22 @@ test("Customer plan overview scopes all appliance queries to the current linked 
 });
 test("Customer My Plans shows own booking/complaint actions and hides free booking after expiry",async()=>{
   let status="active",remaining=2;
+  const plansView=load("src/components/customer-plans/customer-plans-view.tsx",{
+    "react":React,
+    "react/jsx-runtime":JsxRuntime,
+    "next/link":{default:({children,...props})=>React.createElement("a",props,children)},
+    "@/lib/appliances/data":{applianceTypes:{water_purifier:"Water Purifier",ac:"Air Conditioner"}},
+    "@/lib/service-plans/data":{indiaDate:()=>"2026-11-18"},
+    "@/components/customer-home/icons":{HomeIcon:()=>null},
+    "./plans.module.css":new Proxy({default:new Proxy({},{get:()=>""})},{get:(t,p)=>p in t?t[p]:""}),
+  });
   const page=load("src/app/customer/service-plans/page.tsx",{
     "react/jsx-runtime":JsxRuntime,
     "next/link":{default:({children,...props})=>React.createElement("a",props,children)},
     "@/lib/auth":{requireRole:async role=>{assert.equal(role,"customer");return {uid:"owner",role};}},
     "@/lib/service-plans/server":{ownPlanOverview:async()=>({customer:{active:true},nextCursor:null,items:[{appliance:{id:"own-appliance",brand:"TEST",model:"Purifier",active:true},current:{name:"My two visits",status,remainingServices:remaining,totalServices:2,usedServices:0,expiresOn:"2027-11-15"},upcoming:null}]})},
+    "@/lib/lifecycle/server":{lifecyclePage:async()=>({items:[]})},
+    "@/components/customer-plans/customer-plans-view":plansView,
     "@/components/appliances/appliance-list":{AppliancePagination:()=>null},
   });
   const props={searchParams:Promise.resolve({})};

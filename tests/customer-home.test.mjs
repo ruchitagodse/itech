@@ -72,12 +72,21 @@ test("Home paginated displays label known lower bound and do not claim absence b
   const p = props(); p.overview.nextCursor = "more-appliances"; p.moreSchedule = true; p.openRequests = "50+";
   const html = render(p); assert.match(html, /Active plans shown/); assert.match(html, /50\+/); assert.match(html, /More care on your calendar/);
 });
-test("Home frame adds bottom navigation only on exact Customer home; other pages/roles get original children", () => {
+test("Home frame adds bottom navigation across all customer routes; other roles get original children", () => {
   let pathname = "/customer";
   const { CustomerHomeFrame } = load("src/components/customer-home/home-frame.tsx", { ...base, "next/navigation": { usePathname: () => pathname } });
   const output = () => renderToStaticMarkup(React.createElement(CustomerHomeFrame, null, React.createElement("p", null, "Existing shell")));
   assert.match(output(), /Customer home navigation/); assert.match(output(), /aria-current="page"/);
-  for (const route of ["/customer/appliances", "/customer/profile", "/admin", "/technician"]) { pathname = route; assert.equal(output(), "<p>Existing shell</p>"); }
+  for (const route of ["/customer/appliances", "/customer/service-requests", "/customer/profile"]) {
+    pathname = route;
+    const res = output();
+    assert.match(res, /Customer home navigation/);
+    assert.match(res, /aria-current="page"/);
+  }
+  for (const route of ["/admin", "/technician", "/admin/customers"]) {
+    pathname = route;
+    assert.equal(output(), "<p>Existing shell</p>");
+  }
 });
 test("Home route requires Customer authentication and passes the same actor to all existing scoped readers", async () => {
   let calls = 0;
