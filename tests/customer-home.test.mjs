@@ -24,6 +24,17 @@ const base = {
   "@/lib/service-plans/data": { indiaDate: () => "2026-11-17" },
   "@/lib/service-requests/data": { requestStatuses: { pending: "Pending", in_progress: "In progress", completed: "Completed", cancelled: "Cancelled" }, serviceTypes: { installation: "Installation", maintenance: "Maintenance", repair: "Repair / complaint" } },
 };
+let navigationPath = "/customer";
+const navigationModule = load("src/components/ui/workspace-navigation.tsx", {
+  "react": React,
+  "react/jsx-runtime": JsxRuntime,
+  "next/link": base["next/link"],
+  "next/navigation": { usePathname: () => navigationPath },
+  "@/components/logout-button": base["@/components/logout-button"],
+  "@/components/admin-dashboard/icons": { Icon: () => null },
+  "./workspace-navigation.module.css": base["./home.module.css"],
+});
+base["@/components/ui/workspace-navigation"] = navigationModule;
 const { CustomerHome } = load("src/components/customer-home/dashboard.tsx", base);
 const appliance = { id: "own-appliance", brand: "Very long appliance brand", model: "Customer model", type: "water_purifier", installationDate: "2026-11-17", active: true };
 const current = { id: "own-plan", name: "Included care", status: "active", startsOn: "2026-11-17", expiresOn: "2027-11-17", usedServices: 1, totalServices: 2, remainingServices: 1 };
@@ -75,7 +86,7 @@ test("Home paginated displays label known lower bound and do not claim absence b
 test("Home frame adds bottom navigation across all customer routes; other roles get original children", () => {
   let pathname = "/customer";
   const { CustomerHomeFrame } = load("src/components/customer-home/home-frame.tsx", { ...base, "next/navigation": { usePathname: () => pathname } });
-  const output = () => renderToStaticMarkup(React.createElement(CustomerHomeFrame, null, React.createElement("p", null, "Existing shell")));
+  const output = () => { navigationPath = pathname; return renderToStaticMarkup(React.createElement(CustomerHomeFrame, null, React.createElement("p", null, "Existing shell"))); };
   assert.match(output(), /Customer home navigation/); assert.match(output(), /aria-current="page"/);
   for (const route of ["/customer/appliances", "/customer/service-requests", "/customer/profile"]) {
     pathname = route;

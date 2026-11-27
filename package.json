@@ -14,7 +14,8 @@
     "test": "node --test tests/*.test.mjs",
     "bootstrap:admin": "node --env-file=.env.local scripts/provision-user.mjs --bootstrap",
     "provision:user": "node --env-file=.env.local scripts/provision-user.mjs",
-    "test:rules": "node scripts/test-firestore-rules.mjs"
+    "test:rules": "node scripts/test-firestore-rules.mjs",
+    "test:ui": "node scripts/test-ui.mjs"
   },
   "dependencies": {
     "firebase": "13.3.0",
