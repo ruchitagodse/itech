@@ -1,0 +1,28 @@
+import Link from "next/link";
+import { Icon } from "@/components/admin-dashboard/icons";
+import type { TechnicianDetailData, JobCursors } from "@/lib/admin-technicians/server";
+import { requestStatuses, serviceTypes } from "@/lib/service-requests/data";
+import { AccountBadge, NoJobs, TechnicianAvatar, count, displayDate } from "./shared";
+import c from "@/components/admin-customers/customers.module.css";
+import s from "./technicians.module.css";
+export function TechnicianDetails({ data: d, cursors }: { data: TechnicianDetailData; cursors: JobCursors }) {
+  const t = d.technician;
+  const sections = [
+    { title: "Current assigned requests", id: "assigned-requests", key: "pendingCursor", count: t.workload?.pending, status: "pending", page: d.pending, note: "Assigned requests awaiting service" },
+    { title: "In-progress jobs", id: "progress-requests", key: "progressCursor", count: t.workload?.inProgress, status: "in_progress", page: d.progress, note: "Service work currently underway" },
+    { title: "Completed service history", id: "completed-requests", key: "completedCursor", count: t.workload?.completed, status: "completed", page: d.completed, note: "Completed requests attributed to this technician" },
+  ] as const;
+  const nextUrl = (key: string, cursor: string | null, anchor: string) => {
+    const params = new URLSearchParams(Object.fromEntries(Object.entries(cursors).filter(([, v]) => Boolean(v))) as Record<string, string>);
+    if (cursor) params.set(key, cursor); else params.delete(key);
+    return "/admin/technicians/" + t.id + "?" + params + "#" + anchor;
+  };
+  return <div className={c.screen}><Link className={c.backLink} href="/admin/technicians">All technicians</Link><div className={c.profileHeading}><TechnicianAvatar name={t.displayName} large/><div className={c.profileTitle}><p className={c.eyebrow}>TECHNICIAN PROFILE</p><h1>{t.displayName}</h1><div><AccountBadge status={t.status}/><span>Service team</span></div></div><Link className={c.secondary} href="/admin/service-requests">Service requests</Link></div>
+    <section className={c.metrics} aria-label="Technician workload">{[{ label: "Assigned jobs", value: t.workload?.assigned, note: "Pending + in progress" }, { label: "Awaiting service", value: t.workload?.pending, note: "Assigned pending requests" }, { label: "In progress", value: t.workload?.inProgress, note: "Work currently underway" }, { label: "Completed", value: t.workload?.completed, note: "Currently attributed requests" }].map(m => <article className={c.metric} key={m.label}><div><span>{m.label}</span></div><strong>{count(m.value)}</strong><p>{m.note}</p></article>)}</section>
+    <div className={c.detailGrid}><section className={c.panel}><div className={c.panelHeading}><div><h2><Icon name="team"/>Personal & contact details</h2><p>Recorded information for this technician</p></div></div><dl className={c.information}>{[["Full name", t.displayName], ["Email address", t.email || "Not recorded"], ["Phone number", t.phone || "Not recorded"], ["Profile created", displayDate(t.createdAt)]].map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl></section>
+      <section className={c.panel}><div className={c.panelHeading}><div><h2><Icon name="plan"/>Account information</h2><p>Sign-in and profile status</p></div></div><div className={c.accountBody}><AccountBadge status={t.status}/><dl className={s.accountList}><div><dt>Role</dt><dd>Technician</dd></div><div><dt>Profile</dt><dd>{t.profileActive ? "Active" : "Inactive"}</dd></div><div><dt>Email verification</dt><dd>{t.emailVerified === null ? "Unavailable" : t.emailVerified ? "Verified" : "Not verified"}</dd></div><div><dt>Sign-in</dt><dd>{t.signInDisabled === null ? "Unavailable" : t.signInDisabled ? "Disabled" : "Enabled"}</dd></div></dl><p className={c.note}>Account details are read-only. No account editing workflow is currently available. Account state does not indicate whether a technician is available for work.</p></div></section></div>
+    <nav className={c.sectionNav} aria-label="Technician profile sections">{sections.map(section => <a key={section.id} href={"#" + section.id}>{section.title}</a>)}</nav>
+    {sections.map(section => <section key={section.id} id={section.id} className={c.panel}><div className={c.panelHeading}><div><h2><Icon name={section.status === "completed" ? "check" : "request"}/>{section.title} <span className={c.count}>{count(section.count)}</span></h2><p>{section.note}</p></div></div>{!section.page?.items.length ? <NoJobs failed={section.page === null}/> : <div className={c.historyList}>{section.page.items.map(r => <Link href={"/admin/service-requests/" + r.id} key={r.id}><span className={c.iconTile}><Icon name="request"/></span><div><strong>{r.customerName}</strong><small>{serviceTypes[r.serviceType]} · {r.applianceLabel}</small><small>{section.status === "completed" ? "Last updated " + displayDate(r.updatedAt) : "Created " + displayDate(r.createdAt)}</small></div><span className={`${c.badge} ${section.status === "completed" ? c.positive : section.status === "pending" ? c.amber : c.neutral}`}>{requestStatuses[r.status]}</span></Link>)}</div>}<div className={c.pagination}><span>Up to 6 requests per page · newest created first</span><div>{cursors[section.key] && <Link className={c.outline} href={nextUrl(section.key, null, section.id)}>First page</Link>}{section.page?.nextCursor && <Link className={c.secondary} href={nextUrl(section.key, section.page.nextCursor, section.id)}>Next page</Link>}</div></div></section>)}
+    <p className={c.footnote}><Icon name="plan"/>Assignments, service progress and completion notes remain managed through the existing service request workflow.</p>
+  </div>;
+}

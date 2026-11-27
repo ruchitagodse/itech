@@ -1,0 +1,43 @@
+.search .searchField { min-width: 200px; }
+.search > div:nth-child(2), .search > div:nth-child(3) { width: 190px; }
+.table th:first-child, .table td:first-child { width: 24%; }
+.table th:nth-child(2) { width: 24%; }
+.table th:nth-child(3) { width: 17%; }
+.table th:nth-child(4), .table th:nth-child(5), .table th:nth-child(6) { width: 9%; }
+.table th:last-child { width: 8%; }
+.table td { overflow-wrap: anywhere; }
+.cardBadge { margin-top: 14px; }
+.cardWorkload { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 18px 0; margin-top: 4px; border-top: 1px solid #edf1f7; text-align: center; }
+.cardWorkload > div + div { border-left: 1px solid #edf1f7; }
+.cardWorkload strong { display: block; color: #2e557a; font-size: 22px; font-weight: 600; }
+.cardWorkload small { display: block; color: var(--itech-muted); font-size: 13px; margin-top: 5px; }
+.fullButton { width: 100%; }
+.accountList { display: flex; flex-direction: column; gap: 15px; border-top: 1px solid #edf1f7; border-bottom: 1px solid #edf1f7; padding: 20px 0; margin: 20px 0 0; }
+.accountList > div { display: flex; justify-content: space-between; gap: 16px; }
+.accountList dt { font-size: 13px; color: var(--itech-muted); }
+.accountList dd { font-size: 14px; color: #526d88; margin: 0; text-align: right; }
+.roleNote { display: flex; align-items: center; gap: 13px; padding: 20px 24px; border-top: 1px solid #edf1f7; }
+.roleNote > div { flex: 1; }
+.roleNote strong { font-size: 14px; font-weight: 600; }
+.roleNote p { font-size: 13px; color: var(--itech-muted); margin-top: 5px; line-height: 1.8; }
+.created { padding: 24px; }
+.created h2 { font-size: 20px; color: #245c46; }
+.created p { font-size: 14px; color: #6a8592; line-height: 1.9; margin-top: 12px; overflow-wrap: anywhere; }
+.created > a { margin-top: 20px; }
+@media(max-width:1279px) {
+  .search { display: grid; grid-template-columns: 1fr 1fr auto; }
+  .search > div:first-child { grid-column: 1 / -1; }
+  .search > div:nth-child(2), .search > div:nth-child(3) { width: auto; }
+}
+@media(max-width:767px) {
+  .search { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .search > button { grid-column: 1 / -1; }
+  .search select { font-size: 14px; padding-left: 10px; padding-right: 28px; background-position: right 10px center; }
+  .roleNote { padding: 18px 16px; flex-wrap: wrap; }
+  .roleNote > .badge { margin-left: 49px; }
+  .accountList dt { font-size: 13px; }
+  .accountList dd { font-size: 14px; }
+  .created { padding: 20px 16px; }
+}
+
+.fullButton { min-height: 44px; line-height: 1.4; white-space: normal; text-align: center; }

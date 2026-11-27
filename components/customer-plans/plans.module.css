@@ -1,0 +1,780 @@
+.container {
+  --plan-ink: var(--itech-ink);
+  --plan-navy: var(--itech-primary);
+  --plan-navy-deep: var(--itech-primary-hover);
+  --plan-navy-soft: var(--itech-soft);
+  --plan-emerald: #059669;
+  --plan-emerald-soft: #ecfdf5;
+  --plan-amber: #b45309;
+  --plan-amber-soft: #fffbeb;
+  --plan-red: #dc2626;
+  --plan-red-soft: #fef2f2;
+  --plan-muted: var(--itech-muted);
+  --plan-line: var(--itech-line);
+  --plan-bg: var(--itech-canvas);
+  --plan-card: #ffffff;
+  color: var(--plan-ink);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 36px 40px calc(80px + env(safe-area-inset-bottom));
+  font-size: 14px;
+}
+
+.container *,
+.container *::before,
+.container *::after {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.container a,
+.container button {
+  touch-action: manipulation;
+}
+
+.container h1,
+.container h2,
+.container h3,
+.container p,
+.container strong,
+.container span {
+  overflow-wrap: anywhere;
+}
+
+/* Page Header */
+.pageHeader {
+  margin-bottom: 28px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.kicker {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: var(--plan-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.pageHeader h1 {
+  font-size: clamp(26px, 3.2vw, 34px);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  color: var(--plan-ink);
+  margin: 0;
+}
+
+.countBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--plan-navy-soft);
+  color: var(--plan-navy);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.subtitle {
+  color: var(--plan-muted);
+  font-size: 14px;
+  margin-top: 6px;
+  max-width: 600px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalogueBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  background: white;
+  border: 1px solid var(--plan-line);
+  color: var(--plan-navy);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(13, 40, 71, 0.04);
+}
+
+.catalogueBtn:hover {
+  background: #f8fafc;
+  border-color: #cbdcf0;
+}
+
+.catalogueBtn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Filter Chips */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.filterRow::-webkit-scrollbar {
+  display: none;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--plan-line);
+  background: white;
+  color: var(--plan-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.filterChip:hover {
+  border-color: #cbd5e1;
+  color: var(--plan-ink);
+}
+
+.filterChip[data-active="true"] {
+  background: var(--plan-navy);
+  color: white;
+  border-color: var(--plan-navy);
+}
+
+/* Plan Cards Grid */
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.planCard {
+  background: white;
+  border: 1px solid var(--plan-line);
+  border-radius: 20px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 10px rgba(13, 40, 71, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.planCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13, 40, 71, 0.08);
+  border-color: #cbdcf0;
+}
+
+/* Card Header: Appliance & Status */
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.applianceInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.applianceIconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--plan-navy-soft);
+  color: var(--plan-navy);
+  flex-shrink: 0;
+}
+
+.applianceIconBox[data-type="water_purifier"] {
+  background: #e6f6f9;
+  color: #0c7792;
+}
+
+.applianceIconBox[data-type="ac"] {
+  background: #edf4fe;
+  color: #1d5fc6;
+}
+
+.applianceIconBox svg {
+  width: 22px;
+  height: 22px;
+}
+
+.applianceLabels {
+  display: flex;
+  flex-direction: column;
+}
+
+.applianceType {
+  font-size: 13px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--plan-muted);
+}
+
+.applianceName {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--plan-ink);
+  line-height: 1.3;
+}
+
+/* Status Pill */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusPill[data-tone="positive"] {
+  background: var(--plan-emerald-soft);
+  color: var(--plan-emerald);
+}
+
+.statusPill[data-tone="warning"] {
+  background: var(--plan-amber-soft);
+  color: var(--plan-amber);
+}
+
+.statusPill[data-tone="critical"] {
+  background: var(--plan-red-soft);
+  color: var(--plan-red);
+}
+
+.statusPill[data-tone="neutral"] {
+  background: #f1f5f9;
+  color: var(--itech-muted);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Plan Title & Validity Block */
+.planNameRow {
+  margin-bottom: 16px;
+}
+
+.planTitle {
+  font-size: 19px;
+  font-weight: 650;
+  color: var(--plan-ink);
+  line-height: 1.35;
+  margin: 0 0 6px;
+}
+
+.validityText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--plan-muted);
+}
+
+.validityText svg {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+}
+
+/* Maintenance Visit Progress (Core Focus) */
+.progressSection {
+  background: #f8fafc;
+  border: 1px solid var(--plan-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.progressTitle {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--plan-ink);
+}
+
+.remainingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--plan-emerald);
+  background: var(--plan-emerald-soft);
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.remainingBadge[data-exhausted="true"] {
+  color: var(--itech-muted);
+  background: #e2e8f0;
+}
+
+.progressBarContainer {
+  height: 10px;
+  background: var(--itech-line);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--plan-emerald);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.progressFill[data-warning="true"] {
+  background: var(--plan-amber);
+}
+
+.progressFill[data-exhausted="true"] {
+  background: #94a3b8;
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--plan-muted);
+}
+
+.statsRow strong {
+  color: var(--plan-ink);
+}
+
+.serviceDeductionNote {
+  font-size: 13px;
+  color: var(--plan-muted);
+  line-height: 1.5;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+/* Renewal Proposals Callout */
+.renewalNoticeBox {
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+
+.renewalNoticeBox[data-tone="warning"] {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.renewalNoticeBox[data-tone="info"] {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e40af;
+}
+
+.renewalNoticeContent {
+  flex: 1;
+}
+
+.renewalNoticeTitle {
+  font-size: 13px;
+  font-weight: 650;
+  margin: 0 0 4px;
+}
+
+.renewalNoticeDesc {
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0 0 8px;
+  opacity: 0.9;
+}
+
+.renewalActionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: underline;
+  color: inherit;
+}
+
+/* Card Action Footer */
+.cardActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--plan-line);
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.freeMaintenanceBtn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  background: var(--plan-emerald);
+  color: white !important;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.freeMaintenanceBtn:hover {
+  background: #047857;
+}
+
+.freeMaintenanceBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.secondaryActionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.complaintBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  background: white;
+  border: 1px solid var(--plan-line);
+  color: var(--plan-ink) !important;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.complaintBtn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: var(--plan-navy) !important;
+}
+
+.historyLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--plan-navy);
+  text-decoration: none;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.historyLink:hover {
+  text-decoration: underline;
+}
+
+.historyLink svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Empty Card */
+.emptyCard {
+  background: white;
+  border: 1px solid var(--plan-line);
+  border-radius: 20px;
+  padding: 48px 24px;
+  text-align: center;
+  max-width: 580px;
+  margin: 40px auto;
+  box-shadow: 0 2px 12px rgba(13, 40, 71, 0.04);
+}
+
+.emptyIconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: var(--plan-navy-soft);
+  color: var(--plan-navy);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+}
+
+.emptyIconCircle svg {
+  width: 32px;
+  height: 32px;
+}
+
+.emptyCard h2 {
+  font-size: 20px;
+  font-weight: 650;
+  color: var(--plan-ink);
+  margin-bottom: 8px;
+}
+
+.emptyCard p {
+  color: var(--plan-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 440px;
+  margin: 0 auto 24px;
+}
+
+.emptyAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--plan-navy);
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.emptyAction:hover {
+  background: var(--plan-navy-deep);
+}
+
+/* Information Banner */
+.infoBanner {
+  background: white;
+  border: 1px solid var(--plan-line);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+
+.infoBannerText h3 {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--plan-ink);
+  margin: 0 0 4px;
+}
+
+.infoBannerText p {
+  font-size: 13px;
+  color: var(--plan-muted);
+  margin: 0;
+}
+
+/* Pagination */
+.paginationRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--plan-line);
+}
+
+.paginationNote {
+  font-size: 13px;
+  color: var(--plan-muted);
+}
+
+.paginationButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.pageBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--plan-line);
+  border-radius: 8px;
+  background: white;
+  color: var(--plan-ink);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pageBtn:hover {
+  background: #f8fafc;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 760px) {
+  .container {
+    padding: 20px 18px calc(88px + env(safe-area-inset-bottom));
+  }
+
+  .headerTop {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .headerActions {
+    width: 100%;
+  }
+
+  .catalogueBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .plansGrid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .planCard {
+    padding: 20px;
+  }
+
+  .secondaryActionsRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .complaintBtn {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .historyLink {
+    margin-left: 0;
+    justify-content: center;
+    padding: 6px 0;
+  }
+
+  .infoBanner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 16px 14px calc(88px + env(safe-area-inset-bottom));
+  }
+
+  .planCard {
+    padding: 16px 14px;
+  }
+
+  .progressSection {
+    padding: 14px 12px;
+  }
+
+  .applianceType {
+    font-size: 13px;
+  }
+
+  .applianceName {
+    font-size: 15px;
+  }
+
+  .planTitle {
+    font-size: 17px;
+  }
+
+  .statsRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .filterChip {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}
+
+/* Shared iTech surface and control rhythm. */
+.container :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) { font-size: 16px; min-height: 48px; border-radius: 12px; }
+.catalogueBtn, .complaintBtn, .freeMaintenanceBtn, .pageBtn { min-height: 44px; line-height: 1.4; white-space: normal; text-align: center; }
+.emptyCard, .planCard { border-radius: var(--itech-radius); }
+
+/* The persistent customer shell owns outer gutters and navigation clearance. */
+.container { padding: 16px 0 0; }
+@media (max-width: 760px) {
+  .container { padding: 0; }
+}
