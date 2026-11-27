@@ -1,0 +1,139 @@
+.pwaBanner {
+  position: fixed;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  left: 16px;
+  right: 16px;
+  max-width: 440px;
+  margin: 0 auto;
+  z-index: 99;
+  background: #ffffff;
+  border: 1px solid var(--itech-line);
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 30px rgba(7, 82, 155, 0.16), 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pwaIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(7, 82, 155, 0.2);
+}
+
+.pwaIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pwaContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.pwaTitle {
+  font-size: 13.5px;
+  font-weight: 750;
+  color: var(--itech-ink);
+  line-height: 1.25;
+  margin: 0 0 2px;
+}
+
+.pwaDesc {
+  font-size: 13px;
+  color: var(--itech-muted);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.pwaActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.installBtn {
+  background: var(--itech-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.installBtn:hover {
+  background: var(--itech-primary-hover);
+  transform: translateY(-1px);
+}
+
+.dismissBtn {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+  transition: color 0.15s ease;
+}
+
+.dismissBtn:hover {
+  color: var(--itech-ink);
+  background: #f1f5f9;
+}
+
+/* iOS instructions popup */
+.iosGuide {
+  background: var(--itech-soft);
+  border: 1px solid #cce5fb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--itech-primary);
+  line-height: 1.4;
+}
+
+.iosGuide strong {
+  color: var(--itech-primary-hover);
+}
+
+@media (min-width: 1100px) {
+  .pwaBanner {
+    bottom: 24px;
+    right: 24px;
+    left: auto;
+  }
+}
+.dismissBtn, .installBtn { min-height: 44px; line-height: 1.4; white-space: normal; text-align: center; }
+
+.pwaBanner { flex-wrap: wrap; }
+.pwaActions { margin-left: auto; }
+.dismissBtn { min-width: 44px; min-height: 44px; }

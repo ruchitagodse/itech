@@ -1,0 +1,10 @@
+import Link from "next/link";
+import { serviceTypes, requestStatuses, type ServiceRequestRecord } from "@/lib/service-requests/data";
+export function RequestList({ items, basePath, assignedOnly = false }: { items: ServiceRequestRecord[]; basePath: string; assignedOnly?: boolean }) {
+  if (!items.length) return <section className="customer-empty"><h2>{assignedOnly ? "No assigned work yet" : "No service requests yet"}</h2><p className="muted">{assignedOnly ? "Requests matching your selection will appear here when your administrator assigns them to you." : "Requests matching your selection will appear here. Open an appliance to create a request."}</p></section>;
+  return <div className="customer-list request-list" aria-label="Service requests"><div className="customer-list-header"><span>Service &amp; appliance</span><span>Customer</span><span>Created</span><span>Status</span></div>{items.map(item => <Link className="customer-list-row" href={basePath + "/" + item.id} key={item.id}><div><strong>{serviceTypes[item.serviceType]}</strong><small>{item.applianceLabel}</small></div><div>{item.customerName}<small>{item.assignedTechnicianName ? "Technician: " + item.assignedTechnicianName : "Unassigned"}</small></div><div className="request-date">{new Date(item.createdAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}</div><span className={"request-status status-" + item.status}>{requestStatuses[item.status]}</span></Link>)}</div>;
+}
+export function RequestPagination({ basePath, cursor, nextCursor, status }: { basePath: string; cursor: string; nextCursor: string | null; status: string }) {
+  const query = status ? "status=" + encodeURIComponent(status) + "&" : "";
+  return <div className="customer-pagination"><span>Up to 25 requests per page</span><div>{cursor && <Link className="button secondary" href={basePath + (status ? "?status=" + encodeURIComponent(status) : "")}>First page</Link>}{nextCursor && <Link className="button secondary" href={basePath + "?" + query + "cursor=" + encodeURIComponent(nextCursor)}>Next page →</Link>}</div></div>;
+}

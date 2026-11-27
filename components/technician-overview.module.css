@@ -1,0 +1,26 @@
+.screen { display: grid; gap: 24px; }
+.screen :global(.page-heading) { margin: 0; }
+.hero { display: flex; gap: 24px; padding: 32px; background: linear-gradient(125deg, #edf6fd, #ffffff); border: 1px solid var(--itech-line); border-radius: 20px; }
+.heroIcon { display: grid; place-items: center; width: 56px; height: 56px; flex-shrink: 0; border-radius: 16px; color: var(--itech-primary); background: white; border: 1px solid var(--itech-line); }
+.hero h2 { margin: 10px 0; font-size: clamp(24px, 3vw, 30px); color: var(--itech-ink); }
+.hero p { max-width: 540px; font-size: 15px; color: var(--itech-muted); }
+.hero p:first-child { color: var(--itech-primary); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+.hero :global(.button) { margin-top: 24px; width: fit-content; }
+.shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.shortcuts a { display: flex; align-items: center; gap: 12px; min-height: 80px; padding: 18px; border: 1px solid var(--itech-line); border-radius: var(--itech-radius); background: white; color: var(--itech-ink); font-size: 15px; font-weight: 600; }
+.shortcuts svg { color: var(--itech-primary); flex-shrink: 0; }
+.shortcuts a > span:last-child { margin-left: auto; }
+.sectionHeading { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.sectionHeading h2 { font-size: 20px; }
+.sectionHeading p { margin-top: 6px; font-size: 13px; color: var(--itech-muted); }
+.sectionHeading a { flex-shrink: 0; }
+@media (max-width: 600px) {
+  .hero { padding: 24px 20px; flex-direction: column; gap: 12px; }
+  .hero :global(.button) { width: 100%; }
+  .shortcuts { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .shortcuts a { min-height: 64px; }
+  .sectionHeading { align-items: flex-start; }
+}
+
+/* Keep navigation links easy to reach without changing their destinations. */
+.sectionHeading a { min-height: 44px; }

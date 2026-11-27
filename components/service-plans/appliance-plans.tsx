@@ -1,0 +1,17 @@
+import Link from "next/link";
+import type { Profile } from "@/lib/roles";
+import { listAppliancePlans } from "@/lib/service-plans/server";
+import type { PlanRecord } from "@/lib/service-plans/data";
+function PlanSummary({ plan }: { plan: PlanRecord }) {
+  return <dl className="customer-details"><div><dt>Plan</dt><dd>{plan.name}</dd></div><div><dt>Status</dt><dd>{plan.status === "active" ? "Active" : plan.status === "upcoming" ? "Upcoming" : plan.status === "expired" ? "Expired" : "All visits used"}</dd></div><div><dt>Valid from</dt><dd>{plan.startsOn}</dd></div><div><dt>Valid through (IST, inclusive)</dt><dd>{plan.expiresOn}</dd></div><div><dt>Included maintenance visits</dt><dd>{plan.totalServices}</dd></div><div><dt>Completed using this plan</dt><dd>{plan.usedServices}</dd></div><div><dt>{plan.status === "upcoming" ? "Visits available when period starts" : "Remaining services"}</dt><dd>{plan.status === "upcoming" ? plan.totalServices - plan.usedServices : plan.remainingServices}</dd></div>{plan.expiredServices > 0 && <div><dt>Unused visits expired</dt><dd>{plan.expiredServices}</dd></div>}</dl>;
+}
+export async function AppliancePlans({ profile, customerId, applianceId, cursor = "" }: { profile: Profile; customerId: string; applianceId: string; cursor?: string }) {
+  const { appliance,items,current,upcoming,latest,nextCursor } = await listAppliancePlans(profile,customerId,applianceId,cursor);
+  const admin = profile.role === "admin", base = admin ? "/admin/customers/" + customerId + "/appliances/" + applianceId : "/customer/appliances/" + applianceId;
+  return <section className="appliance-list-space"><div className="section-heading"><h2>Appliance service plan</h2>{admin && <Link className="button secondary" href={latest ? "/admin/lifecycle?customerId="+customerId+"&applianceId="+applianceId : base + "/service-plans/new"}>{latest ? "Renew plan" : "Add service plan"}</Link>}</div>
+    {current ? <div className="customer-details-panel"><PlanSummary plan={current} />{!admin && appliance.active && current.status === "active" && current.remainingServices > 0 && <div className="profile-actions"><Link className="button primary" href={"/customer/service-requests/new?applianceId=" + applianceId + "&serviceType=maintenance&free=1"}>Book free maintenance</Link></div>}<p className="muted plan-note">Installation is separate. Only completed maintenance within the validity period uses an included visit.</p></div> : <div className="message">No current service plan. {upcoming ? "An upcoming period is scheduled below." : admin ? "Add a plan to include two free maintenance visits." : "Contact your administrator for a service plan."}</div>}
+    {upcoming && <div className="customer-details-panel"><h3 className="plan-heading">Upcoming renewal</h3><PlanSummary plan={upcoming} /></div>}
+    {items.length > 0 && <details className="customer-details-panel"><summary>Plan period history</summary><div className="plan-history">{items.map(plan=><article key={plan.id}><PlanSummary plan={plan} /></article>)}</div></details>}
+    <div className="customer-pagination"><span>Periods are kept for history; unused visits never carry forward.</span><div>{cursor && <Link className="button secondary" href={base}>Latest periods</Link>}{nextCursor && <Link className="button secondary" href={base+"?planCursor="+encodeURIComponent(nextCursor)}>Older periods →</Link>}</div></div>
+  </section>;
+}
